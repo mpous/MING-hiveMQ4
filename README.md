@@ -13,7 +13,7 @@ Go here https://www.hivemq.com/downloads/hivemq/  and download the zip file and 
 
 Running this project is as simple as deploying it to a balenaCloud application. You can do it in just one click by using the button below:
 
-[![](https://www.balena.io/deploy.png)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/mpous/hivemq-iiot-ming-balena)
+[![](https://www.balena.io/deploy.png)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/mpous/hivemq-ming)
 
 Follow instructions, click Add a Device and flash an SD card with that OS image dowloaded from balenaCloud. Enjoy the magic 🌟Over-The-Air🌟!
 
