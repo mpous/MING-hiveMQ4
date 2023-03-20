@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
     network_mode: host
     ports:
-      - '3000:8080'
+      - '3000:3000'
     volumes:
         - "grafana-data:/data"
 
@@ -76,7 +76,7 @@ services:
     build: ./hivemq4
     ports:
       - 1883:1883 # MQTT/TCP protocol port
-      - 18080:8080 # Control Center port
+      - 8080:8080 # Control Center port
       - 8000:8000 # Websockets port
     volumes:
       - hivemq_data:/opt/hivemq/data                     # Make broker data persistent throughout stop/start cycles
