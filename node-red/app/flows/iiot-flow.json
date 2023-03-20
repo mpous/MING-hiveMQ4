@@ -1,0 +1,793 @@
+[
+    {
+        "id": "b774e57a4fb492e4",
+        "type": "tab",
+        "label": "pulling data",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c8e0e2f5aadf6a32",
+        "type": "tab",
+        "label": "to database",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d4157600b3c1bd25",
+        "type": "tab",
+        "label": "aux",
+        "disabled": true,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c6ce54b4a820f0a6",
+        "type": "modbus-client",
+        "name": "Acti9",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "tcpHost": "10.46.1.10",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": 255,
+        "commandDelay": 1,
+        "clientTimeout": 1000,
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": 2000,
+        "parallelUnitIdsAllowed": false
+    },
+    {
+        "id": "595a56723661ca0a",
+        "type": "mqtt-broker",
+        "name": "mqtt broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "74450c7dc8a8e304",
+        "type": "influxdb",
+        "hostname": "localhost",
+        "port": "8086",
+        "protocol": "http",
+        "database": "balena",
+        "name": "influxdb",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "94b3baf363f6e23d",
+        "type": "modbus-read",
+        "z": "b774e57a4fb492e4",
+        "name": "iC60N",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "unitid": "",
+        "dataType": "HoldingRegister",
+        "adr": "14200",
+        "quantity": "1",
+        "rate": "5",
+        "rateUnit": "h",
+        "delayOnStart": true,
+        "startDelayTime": "1",
+        "server": "c6ce54b4a820f0a6",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [
+                "972a05a931412d5c"
+            ],
+            [
+                "c4c0404c68030b17"
+            ]
+        ]
+    },
+    {
+        "id": "c4c0404c68030b17",
+        "type": "modbus-response",
+        "z": "b774e57a4fb492e4",
+        "name": "",
+        "registerShowMax": 20,
+        "x": 450,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "972a05a931412d5c",
+        "type": "function",
+        "z": "b774e57a4fb492e4",
+        "name": "protocol translation",
+        "func": "if (msg.payload[0] === 3) {\n    msg.payload = \"closed\";\n} else {\n    msg.payload = \"open\";\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 140,
+        "wires": [
+            [
+                "5ba1b04796156b11",
+                "b4a9288243d6ecca"
+            ]
+        ]
+    },
+    {
+        "id": "1b86991445bffef2",
+        "type": "rbe",
+        "z": "b774e57a4fb492e4",
+        "name": "",
+        "func": "rbei",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 690,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b4a9288243d6ecca",
+        "type": "mqtt out",
+        "z": "b774e57a4fb492e4",
+        "name": "ic60n/status",
+        "topic": "ic60n/status",
+        "qos": "0",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "595a56723661ca0a",
+        "x": 850,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5ba1b04796156b11",
+        "type": "debug",
+        "z": "b774e57a4fb492e4",
+        "name": "mqtt",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 790,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "9c9a7cfd6136bc6d",
+        "type": "mqtt in",
+        "z": "b774e57a4fb492e4",
+        "name": "",
+        "topic": "ic60n/status",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "595a56723661ca0a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 60,
+        "wires": [
+            [
+                "5ba1b04796156b11"
+            ]
+        ]
+    },
+    {
+        "id": "6e949ab5cd0f4f8a",
+        "type": "modbus-read",
+        "z": "b774e57a4fb492e4",
+        "name": "PowerTag Power",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "unitid": "150",
+        "dataType": "HoldingRegister",
+        "adr": "3059",
+        "quantity": "2",
+        "rate": "5",
+        "rateUnit": "h",
+        "delayOnStart": true,
+        "startDelayTime": "1",
+        "server": "c6ce54b4a820f0a6",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 140,
+        "y": 440,
+        "wires": [
+            [],
+            [
+                "4f69d9ced2eba947",
+                "5b3955e0157c4a54"
+            ]
+        ]
+    },
+    {
+        "id": "4f69d9ced2eba947",
+        "type": "modbus-response",
+        "z": "b774e57a4fb492e4",
+        "name": "",
+        "registerShowMax": 20,
+        "x": 410,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "5b3955e0157c4a54",
+        "type": "buffer-parser",
+        "z": "b774e57a4fb492e4",
+        "name": "",
+        "data": "payload.data",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "floatbe",
+                "name": "TotalPower",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "keyvalue",
+        "resultTypeType": "return",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": false,
+        "outputs": 1,
+        "x": 410,
+        "y": 420,
+        "wires": [
+            [
+                "56a30ab837742a81",
+                "7b18a88119f177c5"
+            ]
+        ]
+    },
+    {
+        "id": "56a30ab837742a81",
+        "type": "debug",
+        "z": "b774e57a4fb492e4",
+        "name": "PowerTag Power debug",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 670,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "c03be8805ffb0ffd",
+        "type": "mqtt out",
+        "z": "b774e57a4fb492e4",
+        "name": "ic60n/power",
+        "topic": "ic60n/power",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "595a56723661ca0a",
+        "x": 830,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "7b18a88119f177c5",
+        "type": "change",
+        "z": "b774e57a4fb492e4",
+        "name": "set payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.TotalPower",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 630,
+        "y": 420,
+        "wires": [
+            [
+                "c03be8805ffb0ffd"
+            ]
+        ]
+    },
+    {
+        "id": "ff18046dd96a1b65",
+        "type": "mqtt in",
+        "z": "c8e0e2f5aadf6a32",
+        "name": "",
+        "topic": "ic60n/status",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "595a56723661ca0a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 120,
+        "wires": [
+            [
+                "cda6c045bf726379"
+            ]
+        ]
+    },
+    {
+        "id": "46f832cbc7f05a5a",
+        "type": "influxdb out",
+        "z": "c8e0e2f5aadf6a32",
+        "influxdb": "74450c7dc8a8e304",
+        "name": "influxdb",
+        "measurement": "status",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 700,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "cda6c045bf726379",
+        "type": "function",
+        "z": "c8e0e2f5aadf6a32",
+        "name": "payload translation",
+        "func": "if (msg.payload === \"closed\") {\n    msg.payload = 1;\n} else {\n    msg.payload = 0;\n}\n\nnode.status({text: new Date().toLocaleString('es')});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 120,
+        "wires": [
+            [
+                "46f832cbc7f05a5a",
+                "81cbd2e0d379eec0"
+            ]
+        ]
+    },
+    {
+        "id": "81cbd2e0d379eec0",
+        "type": "debug",
+        "z": "c8e0e2f5aadf6a32",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 650,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "2a572eadde0ffc53",
+        "type": "mqtt in",
+        "z": "c8e0e2f5aadf6a32",
+        "name": "ic60n/power",
+        "topic": "ic60n/power",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "595a56723661ca0a",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 320,
+        "wires": [
+            [
+                "19327584a040d843"
+            ]
+        ]
+    },
+    {
+        "id": "6c3d955840489b2f",
+        "type": "influxdb out",
+        "z": "c8e0e2f5aadf6a32",
+        "influxdb": "74450c7dc8a8e304",
+        "name": "influxdb",
+        "measurement": "power",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 700,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "19327584a040d843",
+        "type": "function",
+        "z": "c8e0e2f5aadf6a32",
+        "name": "payload casting",
+        "func": "msg.payload = parseFloat(msg.payload)\n\nnode.status({text: new Date().toLocaleString('es')});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 320,
+        "wires": [
+            [
+                "6c3d955840489b2f",
+                "328a65619605f964"
+            ]
+        ]
+    },
+    {
+        "id": "328a65619605f964",
+        "type": "debug",
+        "z": "c8e0e2f5aadf6a32",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 670,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "1d9d2ce37cbb5011",
+        "type": "modbus-read",
+        "z": "d4157600b3c1bd25",
+        "name": "PowerTag",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "unitid": "150",
+        "dataType": "HoldingRegister",
+        "adr": "3001",
+        "quantity": "12",
+        "rate": "1",
+        "rateUnit": "h",
+        "delayOnStart": true,
+        "startDelayTime": "1",
+        "server": "c6ce54b4a820f0a6",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [],
+            [
+                "99f640b3b3e704a7",
+                "9d806ece24816868"
+            ]
+        ]
+    },
+    {
+        "id": "99f640b3b3e704a7",
+        "type": "modbus-response",
+        "z": "d4157600b3c1bd25",
+        "name": "",
+        "registerShowMax": 20,
+        "x": 390,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "9d806ece24816868",
+        "type": "buffer-parser",
+        "z": "d4157600b3c1bd25",
+        "name": "",
+        "data": "payload.data",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "floatbe",
+                "name": "P2PvAB",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "P2PvBC",
+                "offset": 4,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "P2PvCA",
+                "offset": 8,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "P2NvAN",
+                "offset": 12,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "P2NvBN",
+                "offset": 16,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "P2NvCN",
+                "offset": 20,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "keyvalue",
+        "resultTypeType": "return",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": false,
+        "outputs": 1,
+        "x": 370,
+        "y": 160,
+        "wires": [
+            [
+                "3960ee5e9467f877"
+            ]
+        ]
+    },
+    {
+        "id": "3960ee5e9467f877",
+        "type": "debug",
+        "z": "d4157600b3c1bd25",
+        "name": "PowerTag debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 610,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ab36dc16eda619ef",
+        "type": "modbus-read",
+        "z": "d4157600b3c1bd25",
+        "name": "PowerTag Current",
+        "topic": "",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "unitid": "150",
+        "dataType": "HoldingRegister",
+        "adr": "2999",
+        "quantity": "6",
+        "rate": "5",
+        "rateUnit": "h",
+        "delayOnStart": true,
+        "startDelayTime": "1",
+        "server": "c6ce54b4a820f0a6",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 190,
+        "y": 420,
+        "wires": [
+            [],
+            [
+                "b69b28c3222a33bf",
+                "c368697eb75c0c63"
+            ]
+        ]
+    },
+    {
+        "id": "b69b28c3222a33bf",
+        "type": "modbus-response",
+        "z": "d4157600b3c1bd25",
+        "name": "",
+        "registerShowMax": 20,
+        "x": 450,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "c368697eb75c0c63",
+        "type": "buffer-parser",
+        "z": "d4157600b3c1bd25",
+        "name": "",
+        "data": "payload.data",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "floatbe",
+                "name": "CurrentA",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "CurrentB",
+                "offset": 4,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatbe",
+                "name": "CurrentC",
+                "offset": 8,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "keyvalue",
+        "resultTypeType": "return",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 400,
+        "wires": [
+            [
+                "2b1018bfdcab7f15"
+            ]
+        ]
+    },
+    {
+        "id": "2b1018bfdcab7f15",
+        "type": "debug",
+        "z": "d4157600b3c1bd25",
+        "name": "PowerTag Current debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 730,
+        "y": 400,
+        "wires": []
+    }
+]

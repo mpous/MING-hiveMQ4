@@ -1,0 +1,26 @@
+name: HiveMQ IIoT Gateway
+type: sw.application
+description: >-
+  IIoT edge gateway reference architecture using HiveMQ on balena
+joinable: false
+# By default post-provisioning is overwritten by the deploy-to-balena GitHub action to match README.md
+post-provisioning: Click 'View code' to see the README.
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: "https://github.com/mpous/hivemq-iiot-ming-balena"
+  logo:
+    type: blob.asset
+    data:
+      url: 'https://raw.githubusercontent.com/mpous/hivemq-iiot-ming-balena/master/logo-enterprise.png'
+data:
+  applicationEnvironmentVariables:
+    - HIVEMQ_AUTHENTICATION_ENABLED: false
+    - HIVEMQ_AUTHENTICATION_CONFIGURATION: <authentication><mqtt-simple-authentication><username>your-username</username><password>your-password</password></mqtt-simple-authentication></authentication>
+    - HIVEMQ_CONNECTION_ENABLED: false
+    - HIVEMQ_CONNECTION_CONFIGURATION: <connection><static><host>your-cloud-connection-host</host><port>your-port</port></static></connection> #<<tls><enabled>true</enabled><cipher-suites><cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</cipher-suite><cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_128_CBC_SHA</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_256_CBC_SHA</cipher-suite></cipher-suites><protocols><protocol>TLSv1.2</protocol></protocols></tls>
+  defaultDeviceType: genericx86-64-ext
+  supportedDeviceTypes:
+    - genericx86-64-ext
+

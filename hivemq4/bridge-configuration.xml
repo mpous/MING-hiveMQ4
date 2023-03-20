@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hivemq-bridge-extension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xsi:noNamespaceSchemaLocation="bridge-configuration.xsd">
+    <bridges>
+        <bridge>
+            <!-- ########### Bridge configuration running on balena ########## -->
+            <enabled>true</enabled>
+            <name>balena-hivemqcloud-bridge</name>
+            <remote-broker>
+            
+                <!-- authentication -->
+
+                <!-- configurable host and port -->
+
+            </remote-broker>
+
+            <!-- configurable list of filters -->
+            
+        </bridge>
+    </bridges>
+</hivemq-bridge-extension>
