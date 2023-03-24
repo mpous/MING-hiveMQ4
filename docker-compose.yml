@@ -1,19 +1,39 @@
 version: '2.1'
 
 services:
-  # ------------------------------------------------------------------------------------
-  # Fake data generators over MQTT
-  # ------------------------------------------------------------------------------------
-  data-generators:
-    build:
-      context: .
-      dockerfile: generator_simulator/Dockerfile.template
-    environment:
-      - GENERATORS=3
-      - BROKER=hivemq4
-    depends_on:
-      - hivemq4
   
+  # ------------------------------------------------------------------------------------
+  # MQTT broker - HiveMQ 4 
+  # ------------------------------------------------------------------------------------
+  hivemq4:
+    build: ./hivemq4
+    ports:
+      - 1883:1883 # MQTT/TCP protocol port
+      - 8080:8080 # Control Center port
+      - 8000:8000 # Websockets port
+    volumes:
+      - hivemq_data:/opt/hivemq/data                     # Make broker data persistent throughout stop/start cycles
+      - hivemq_log:/opt/hivemq/log                       # Persist log data
+      - hivemq_license:/opt/hivemq/license               # Persist HiveMQ license
+    environment:
+      JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
+  
+  
+  # ------------------------------------------------------------------------------------
+  # Influxdb
+  # ------------------------------------------------------------------------------------
+  influxdb:
+    image: influxdb:1.7.11
+    #image: influxdb:latest
+    container_name: influxdb
+    restart: unless-stopped
+    ports:
+        - '8086'
+    volumes:
+        - influxdb-data:/var/lib/influxdb
+        - influxdb-etc:/etc/influxdb
+
+
   # ------------------------------------------------------------------------------------
   # Node-RED
   # ------------------------------------------------------------------------------------
@@ -44,19 +64,6 @@ services:
         - "/dev/i2c-1:/dev/i2c-1"
 
   # ------------------------------------------------------------------------------------
-  # Influxdb
-  # ------------------------------------------------------------------------------------
-  influxdb:
-    image: influxdb:1.7.11
-    container_name: influxdb
-    restart: unless-stopped
-    ports:
-        - '8086'
-    volumes:
-        - influxdb-data:/var/lib/influxdb
-        - influxdb-etc:/etc/influxdb
-
-  # ------------------------------------------------------------------------------------
   # Grafana
   # ------------------------------------------------------------------------------------
   grafana:
@@ -68,30 +75,7 @@ services:
     volumes:
         - "grafana-data:/data"
 
-  # ------------------------------------------------------------------------------------
-  # HiveMQ 4 MQTT broker
-  # ------------------------------------------------------------------------------------
-  hivemq4:
-    #image: hivemq/hivemq4:latest
-    build: ./hivemq4
-    ports:
-      - 1883:1883 # MQTT/TCP protocol port
-      - 8080:8080 # Control Center port
-      - 8000:8000 # Websockets port
-    volumes:
-      - hivemq_data:/opt/hivemq/data                     # Make broker data persistent throughout stop/start cycles
-      - hivemq_log:/opt/hivemq/log                       # Persist log data
-      - hivemq_license:/opt/hivemq/license               # Persist HiveMQ license
-    environment:
-      JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
   
-  #ignition:
-  #  image: inductiveautomation/ignition:latest
-  #  ports:
-  #    - 9088:8088
-  
-  #fuxa:
-
 volumes:
   hivemq_data:
   hivemq_log:
@@ -100,5 +84,4 @@ volumes:
   grafana-data:
   influxdb-data:
   influxdb-etc:
-
 

@@ -18,6 +18,7 @@ RUN JOBS=MAX npm install -g --production --unsafe-perm \
       node-red-contrib-opcua \
       node-red-contrib-mqtt-sparkplug-plus \
       node-red-dashboard \
+      node-red-contrib-s7 \
       node-red-contrib-balena \
     && JOBS=MAX npm install --unsafe-perm --production && npm cache clean --force
 
@@ -49,7 +50,7 @@ COPY ./ssh_config /etc/ssh/ssh_config
 COPY ./app ./
 
 # Enable udev for detection of dynamically plugged devices
-ENV UDEV=on
+#ENV UDEV=on
 
 # server.js will run when container starts up on the device
 CMD ["bash", "/usr/src/app/start.sh"]
