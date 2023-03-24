@@ -1,4 +1,4 @@
-name: HiveMQ IIoT Gateway
+name: HiveMQ Industrial IoT Gateway
 type: sw.application
 description: >-
   IIoT edge gateway reference architecture using MING with HiveMQ on balena
@@ -16,6 +16,7 @@ assets:
       url: 'https://raw.githubusercontent.com/mpous/hivemq4-ming/master/logo.png'
 data:
   applicationEnvironmentVariables:
+    - HIVEMQ_BRIDGE_EXTENSION: false
     - HIVEMQ_AUTHENTICATION_ENABLED: false
     - HIVEMQ_AUTHENTICATION_CONFIGURATION: <authentication><mqtt-simple-authentication><username>your-username</username><password>your-password</password></mqtt-simple-authentication></authentication>
     - HIVEMQ_CONNECTION_ENABLED: false

@@ -49,8 +49,6 @@ COPY bridge-configuration.xml /opt/hivemq-${HIVEMQ_VERSION}/extensions/hivemq-br
 COPY docker-entrypoint.sh /opt/docker-entrypoint.sh
 COPY entrypoints.d/* /docker-entrypoint.d/
 
-# Uncomment this line if you are going to use the HiveMQ Bridge Extension
-#RUN rm /opt/hivemq-${HIVEMQ_VERSION}/extensions/hivemq-bridge-extension/DISABLED
 
 RUN ln -s /opt/hivemq-${HIVEMQ_VERSION} /opt/hivemq \
     && groupadd --gid ${HIVEMQ_GID} hivemq \

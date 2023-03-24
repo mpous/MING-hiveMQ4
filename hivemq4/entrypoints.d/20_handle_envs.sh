@@ -7,13 +7,10 @@
 #    #echo "${HIVEMQ_LICENSE}" > /opt/hivemq/license/license.lic
 #fi
 
-
-echo "License?"
-
 if [[ -n "${HIVEMQ_LICENSE}" ]]; then
     echo "Decoding license..."
     
-    DELIMITER="|"
+    DELIMITER="|" 
     output_file="/opt/hivemq/license/license.lic"
 
     echo "${HIVEMQ_LICENSE}" | while read -r line; do
@@ -23,7 +20,6 @@ if [[ -n "${HIVEMQ_LICENSE}" ]]; then
             echo "$i" >> "$output_file"
       done
     done
-
 fi
 
 # We set the bind address here to ensure HiveMQ uses the correct interface. Defaults to using the container hostname (which should be hardcoded in /etc/hosts)
@@ -56,7 +52,14 @@ if [[ "${HIVEMQ_REST_API_ENABLED}" == "true" ]]; then
   sed -i "s|<\!--REST-API-CONFIGURATION-->|${REST_API_ENABLED_CONFIGURATION}|" /opt/hivemq/conf/config.xml
 fi
 
+
 # balena version
+
+# Enable bridge extensions if you are going to use the HiveMQ Bridge Extension
+if [[ "${HIVEMQ_BRIDGE_EXTENSION}" == "true" ]]; then
+    echo "Enabling the bridge extension"
+    rm /opt/hivemq/extensions/hivemq-bridge-extension/DISABLED || true
+fi
 
 # Cloud connection configuration to have a connection between the Edge Broker and the Cloud Broker (example below)
 #                <connection>  

@@ -20,6 +20,7 @@ These variables you can set them in the balenaCloud `Device Variables` tab for t
 
 Variable Name | Value | Description | Default
 ------------ | ------------- | ------------- | -------------
+**`HIVEMQ_BRIDGE_EXTENSION`**  `boolean` | Enable bridge extension and delete the `DISABLED` file on the bridge-extension folder | `false`
 **`HIVEMQ_CONNECTION_ENABLED`** | `boolean` | Enables to change the bridge-extension.xml file with the `connection` tag. | `false`
 **`HIVEMQ_CONNECTION_CONFIGURATION`** | `STRING (XML)` | Connection tag XML definition. | ```<connection><static><host>your-host-address</host><port>your-port</port></static></connection>```
 **`HIVEMQ_AUTHENTICATION_ENABLED`** | `boolean` | Enables to change the bridge-extension.xml file to add the `authentication` tag. | `false`
