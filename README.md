@@ -1,6 +1,10 @@
-# HiveMQ MING - Industrial IoT Gateway with balena
+# Industrial IoT Gateway using MING with HiveMQ and balena
 
-This is a reference architecture to run on your IIoT Edge Gateway HiveMQ MQTT broker with balena reading from Modbus and OPC/UA sensors using UNS (Unified Name Space) and MQTT Sparkplug B. Find the MING stack (MQTT, InfluxDB, NodeRED and Grafana) also running in the edge.
+This is a reference architecture to run on your IIoT Edge Gateway with HiveMQ MQTT broker on balena. 
+
+The example application is reading from Modbus and OPC UA sensors using the MING stack (MQTT, InfluxDB, NodeRED and Grafana) to use the advantages of the Edge Computing to digitalize a factory. In future examples we are going to use IIoT Edge Gateways with HiveMQ and balena to add a UNS (Unified Name Space) for data modeling and MQTT Sparkplug B to format the data being sent over MQTT.
+
+Read more on the blog.balena.io
 
 ## Deploy the code
 
@@ -12,7 +16,7 @@ Go here https://www.hivemq.com/downloads/hivemq/  and download the zip file and 
 
 Running this project is as simple as deploying it to a balenaCloud application. You can do it in just one click by using the button below:
 
-[![](https://www.balena.io/deploy.png)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/mpous/hivemq-ming)
+[![](https://www.balena.io/deploy.png)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/mpous/hivemq4-ming)
 
 Follow instructions, click Add a Device and flash an SD card with that OS image dowloaded from balenaCloud. Enjoy the magic 🌟Over-The-Air🌟!
 
@@ -46,7 +50,7 @@ The MING services are exposed in different ports. On the default configuration t
 
 ## Attribution
 
-- This is in part working thanks of the work of Kudzai Manditereza from HiveMQ and Marc Pous from balena.io.
+- This is in part working thanks of the work of [Kudzai Manditereza](https://github.com/kmanditereza) from HiveMQ and Marc Pous from balena.io.
 
 ## Troubleshooting
 
