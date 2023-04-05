@@ -1,1 +1,667 @@
-[{"id":"f7577481e763d189","type":"tab","label":"Monitoring","disabled":false,"info":"","env":[]},{"id":"a7f18432eda62bdc","type":"tab","label":"Command / Control","disabled":false,"info":"","env":[]},{"id":"efbaadbb1a5438c4","type":"modbus-client","name":"Schneider PLC Modbus","clienttype":"tcp","bufferCommands":true,"stateLogEnabled":false,"queueLogEnabled":false,"failureLogEnabled":true,"tcpHost":"192.168.0.133","tcpPort":"502","tcpType":"DEFAULT","serialPort":"/dev/ttyUSB","serialType":"RTU-BUFFERD","serialBaudrate":"9600","serialDatabits":"8","serialStopbits":"1","serialParity":"none","serialConnectionDelay":"100","serialAsciiResponseStartDelimiter":"0x3A","unit_id":1,"commandDelay":1,"clientTimeout":1000,"reconnectOnTimeout":true,"reconnectTimeout":2000,"parallelUnitIdsAllowed":true,"showWarnings":true,"showLogs":true},{"id":"9332b7b4935332d5","type":"OpcUa-Endpoint","endpoint":"opc.tcp://192.168.0.229:14840/groov","secpol":"None","secmode":"None","none":true,"login":false,"usercert":false,"usercertificate":"","userprivatekey":""},{"id":"8564f9c4a1776c9e","type":"mqtt-broker","name":"","broker":"127.0.0.1","port":"1883","clientid":"","autoConnect":true,"usetls":false,"protocolVersion":"4","keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","birthMsg":{},"closeTopic":"","closeQos":"0","closePayload":"","closeMsg":{},"willTopic":"","willQos":"0","willPayload":"","willMsg":{},"userProps":"","sessionExpiry":""},{"id":"d0ba5f67c368acc3","type":"influxdb","hostname":"127.0.0.1","port":"8086","protocol":"http","database":"balena","name":"","usetls":false,"tls":"","influxdbVersion":"1.x","url":"http://localhost:8086","rejectUnauthorized":true},{"id":"9fc71d1ed6f3ac60","type":"ui_tab","name":"Home","icon":"dashboard","disabled":false,"hidden":false},{"id":"326e6b499a6c1223","type":"ui_base","theme":{"name":"theme-light","lightTheme":{"default":"#0094CE","baseColor":"#0094CE","baseFont":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif","edited":true,"reset":false},"darkTheme":{"default":"#097479","baseColor":"#097479","baseFont":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif","edited":false},"customTheme":{"name":"Untitled Theme 1","default":"#4B7930","baseColor":"#4B7930","baseFont":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"},"themeState":{"base-color":{"default":"#0094CE","value":"#0094CE","edited":false},"page-titlebar-backgroundColor":{"value":"#0094CE","edited":false},"page-backgroundColor":{"value":"#fafafa","edited":false},"page-sidebar-backgroundColor":{"value":"#ffffff","edited":false},"group-textColor":{"value":"#1bbfff","edited":false},"group-borderColor":{"value":"#ffffff","edited":false},"group-backgroundColor":{"value":"#ffffff","edited":false},"widget-textColor":{"value":"#111111","edited":false},"widget-backgroundColor":{"value":"#0094ce","edited":false},"widget-borderColor":{"value":"#ffffff","edited":false},"base-font":{"value":"-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"}},"angularTheme":{"primary":"indigo","accents":"blue","warn":"red","background":"grey","palette":"light"}},"site":{"name":"Node-RED Dashboard","hideToolbar":"false","allowSwipe":"false","lockMenu":"false","allowTempTheme":"true","dateFormat":"DD/MM/YYYY","sizes":{"sx":48,"sy":48,"gx":6,"gy":6,"cx":6,"cy":6,"px":0,"py":0}}},{"id":"ddf9cb041e7aabdb","type":"ui_group","name":"Command and Control","tab":"9fc71d1ed6f3ac60","order":1,"disp":true,"width":"6","collapse":false,"className":""},{"id":"7c0f909346aa6a08","type":"modbus-read","z":"f7577481e763d189","name":"Schneider PLC Modbus","topic":"temperature","showStatusActivities":false,"logIOActivities":false,"showErrors":false,"showWarnings":true,"unitid":"1","dataType":"HoldingRegister","adr":"0","quantity":"1","rate":"3","rateUnit":"m","delayOnStart":false,"startDelayTime":"","server":"efbaadbb1a5438c4","useIOFile":false,"ioFile":"","useIOForPayload":false,"emptyMsgOnFail":false,"x":200,"y":160,"wires":[[],["3259e4c4672aee59"]]},{"id":"1eb201da77ba8afd","type":"OpcUa-Client","z":"f7577481e763d189","endpoint":"9332b7b4935332d5","action":"read","deadbandtype":"a","deadbandvalue":1,"time":10,"timeUnit":"s","certificate":"n","localfile":"","localkeyfile":"","securitymode":"None","securitypolicy":"None","folderName4PKI":"","name":"","x":400,"y":300,"wires":[["9801325389f1c552"]]},{"id":"e14817a0215ceca6","type":"inject","z":"f7577481e763d189","name":"","props":[{"p":"payload"},{"p":"topic","vt":"str"}],"repeat":"","crontab":"","once":false,"onceDelay":0.1,"topic":"ns=2;s=Devices/[GroovRio]/OptoMMP/Modules/Channels/Temperature/Value","payload":"","payloadType":"str","x":170,"y":300,"wires":[["1eb201da77ba8afd"]]},{"id":"3259e4c4672aee59","type":"function","z":"f7577481e763d189","name":"Pre-process Modbus Data","func":"var newMsg = {};\nnewMsg.payload = { \"temperature\": (msg.payload.data[0]/100)*16, \"id\": \"compressor1_temp\" };\n\nreturn newMsg;","outputs":1,"noerr":0,"initialize":"","finalize":"","libs":[],"x":520,"y":160,"wires":[["1c75ee6a8e8452d7"]]},{"id":"6b243f2fee8f2cb5","type":"mqtt in","z":"f7577481e763d189","name":"Subscribe to Local HiveMQ MQTT Broker","topic":"remote_plant_1","qos":"2","datatype":"auto-detect","broker":"8564f9c4a1776c9e","nl":false,"rap":true,"rh":0,"inputs":0,"x":280,"y":480,"wires":[["fba91f0a21895959","e0789ffd43ffbf96","ebcddeddcb6b7afa"]]},{"id":"fba91f0a21895959","type":"debug","z":"f7577481e763d189","name":"debug 1","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"false","statusVal":"","statusType":"auto","x":580,"y":480,"wires":[]},{"id":"84fa6ed9cac5a858","type":"influxdb out","z":"f7577481e763d189","influxdb":"d0ba5f67c368acc3","name":"","measurement":"msg.payload","precision":"","retentionPolicy":"","database":"database","precisionV18FluxV20":"ms","retentionPolicyV18Flux":"","org":"organisation","bucket":"bucket","x":940,"y":480,"wires":[]},{"id":"1c75ee6a8e8452d7","type":"function","z":"f7577481e763d189","name":"Convert to ISA 95 Data Model","func":"var newMsg = {};\nnewMsg.payload = \n\n{\n    \"compressor1\": {\n        \"parameters\": [\n            {\n                \"id\": \"compressor_motor_temperature\",\n                \"name\": \"Motor Temperature\",\n                \"description\": \"PT_100 Temp Sensor mounted on the motor housing.\",\n                \"value\": msg.payload.temperature,\n                \"timestamp\": Date.now()\n            },\n\n            {\n                \"id\": \"compressor_run_status\",\n                \"name\": \"Running Status\",\n                \"description\": \"Is compressor running\",\n                \"value\": true,\n                \"timestamp\": Date.now()\n            }\n        ],\n\n        \"metaData\": [\n            {\n                \"nameplate\": [\n                    {\n                        \"id\": \"hivemq_balena_hivemq_ming_stack \",\n                        \"name\": \"HiveMQ Balena MING Stack Demonstrator \",\n                        \"description\": \"HiveMQ\",\n                        \"value\": \"HiveMQ_Balena MING Stack Demontrator\",\n                        \"timestamp\": Date.now()\n                    }\n                ]\n            }]\n\n\n\n    }\n}\n\nreturn newMsg;","outputs":1,"noerr":0,"initialize":"","finalize":"","libs":[],"x":850,"y":160,"wires":[["d0a1180832dd8dc8"]]},{"id":"9801325389f1c552","type":"function","z":"f7577481e763d189","name":"Convert to ISA 95 Data Model","func":"var newMsg = {};\nnewMsg.payload = \n\n{\n    \"compressor2\": {\n        \"parameters\": [\n            {\n                \"id\": \"compressor_motor_temperature\",\n                \"name\": \"Motor Temperature\",\n                \"description\": \"PT_100 Temp Sensor mounted on the motor housing.\",\n                \"value\": msg.payload,\n                \"timestamp\": Date.now()\n            },\n\n            {\n                \"id\": \"compressor_run_status\",\n                \"name\": \"Running Status\",\n                \"description\": \"Is compressor running\",\n                \"value\": true,\n                \"timestamp\": Date.now()\n            }\n        ],\n\n        \"metaData\": [\n            {\n                \"nameplate\": [\n                    {\n                        \"id\": \"hivemq_balena_hivemq_ming_stack \",\n                        \"name\": \"HiveMQ Balena MING Stack Demonstrator \",\n                        \"description\": \"HiveMQ\",\n                        \"value\": \"HiveMQ_Balena MING Stack Demontrator\",\n                        \"timestamp\": Date.now()\n                    }\n                ]\n            }]\n\n\n\n    }\n}\n\nreturn newMsg;","outputs":1,"noerr":0,"initialize":"","finalize":"","libs":[],"x":810,"y":300,"wires":[["d0a1180832dd8dc8"]]},{"id":"d0a1180832dd8dc8","type":"mqtt out","z":"f7577481e763d189","name":"Publish to Local HiveMQ MQTT Broker","topic":"remote_plant_1","qos":"","retain":"","respTopic":"","contentType":"","userProps":"","correl":"","expiry":"","broker":"8564f9c4a1776c9e","x":1170,"y":180,"wires":[]},{"id":"20b8189c4bbade31","type":"comment","z":"f7577481e763d189","name":"Collect data from Modbus and OPC UA devices and publish it to MQTT broker","info":"","x":360,"y":100,"wires":[]},{"id":"99cdabfd049fe66b","type":"comment","z":"f7577481e763d189","name":"Subscribe to receive collected data and store on InfluxDB","info":"","x":330,"y":420,"wires":[]},{"id":"e0789ffd43ffbf96","type":"function","z":"f7577481e763d189","name":"Parameters parser","func":"var msgs = [];\n\nvar message = msg.payload;\nvar compressor = \"compressor1\";\n\nif (message.compressor2 != null) {\n    message = message.compressor2;\n    compressor = \"compressor2\";\n}\nelse {\n    message = message.compressor1;\n}\n\nfor (var i = 0; i < message.parameters.length; i++) {\n    if (message.parameters[i].id == \"compressor_motor_temperature\") {\n        msgs.push(\n            {\n                measurement: \"compressor\",\n                fields: {\n                    temperature: message.parameters[i].value,\n                    timestamp: message.parameters[i].timestamp\n                },\n                tags: {\n                    id: compressor\n\n                },\n                timestamp: new Date()\n            }\n        );\n    }\n    else if (message.parameters[i].id == \"compressor_run_status\") {\n        msgs.push(\n            {\n                measurement: \"compressor\",\n                fields: {\n                    status: message.parameters[i].value,\n                    timestamp: message.parameters[i].timestamp\n                },\n                tags: {\n                    id: compressor\n\n                },\n                timestamp: new Date()\n            }\n        );\n    }\n\n}\n\nmsg.payload = msgs;\n\nreturn msg;","outputs":1,"noerr":0,"initialize":"","finalize":"","libs":[],"x":610,"y":540,"wires":[["c66549aab8badc90","6446f52e02023442"]]},{"id":"ebcddeddcb6b7afa","type":"function","z":"f7577481e763d189","name":"RAW data parser","func":"var jsonstr = JSON.stringify(msg.payload);\n\nvar message = msg.payload;\nvar compressor = \"compressor1\";\n\nif (message.compressor2 != null) {\n    message = message.compressor2;\n    compressor = \"compressor2\";\n}\nelse {\n    message = message.compressor1;\n}\n\n\n// batch up can specify measurment. Must use batch node\nmsg.payload = [\n    {\n        measurement: \"RAW_DATA\",\n        fields: {\n            jsonpayload: jsonstr,\n        },\n        tags: {\n            id: compressor,\n            name: message.metaData[0].nameplate[0].name\n        },\n        timestamp: new Date()\n    }\n];\nreturn msg;","outputs":1,"noerr":0,"initialize":"","finalize":"","libs":[],"x":610,"y":600,"wires":[["c66549aab8badc90","6446f52e02023442"]]},{"id":"c66549aab8badc90","type":"influxdb batch","z":"f7577481e763d189","influxdb":"d0ba5f67c368acc3","precision":"","retentionPolicy":"","name":"InfluxDB batch","database":"database","precisionV18FluxV20":"ms","retentionPolicyV18Flux":"","org":"organisation","bucket":"bucket","x":880,"y":560,"wires":[]},{"id":"6446f52e02023442","type":"debug","z":"f7577481e763d189","name":"debug 3","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"false","statusVal":"","statusType":"auto","x":860,"y":640,"wires":[]},{"id":"8e5b14899e5e7691","type":"OpcUa-Client","z":"a7f18432eda62bdc","endpoint":"9332b7b4935332d5","action":"write","deadbandtype":"a","deadbandvalue":1,"time":10,"timeUnit":"s","certificate":"n","localfile":"","localkeyfile":"","securitymode":"None","securitypolicy":"None","folderName4PKI":"","name":"","x":760,"y":220,"wires":[["98c9de3f54a23182"]]},{"id":"0f48d4cb124f2b08","type":"OpcUa-Item","z":"a7f18432eda62bdc","item":"ns=2;s=Devices/[GroovRio]/OptoMMP/Modules/Channels/Light_Indicator/State","datatype":"Boolean","value":"True","name":"Write","x":570,"y":220,"wires":[["8e5b14899e5e7691"]]},{"id":"98c9de3f54a23182","type":"debug","z":"a7f18432eda62bdc","name":"debug 2","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"false","statusVal":"","statusType":"auto","x":1000,"y":220,"wires":[]},{"id":"9cdc4b201dc39fe5","type":"mqtt in","z":"a7f18432eda62bdc","name":"Subscribe to Local HiveMQ MQTT Broker","topic":"remote_plant_1/light","qos":"0","datatype":"auto-detect","broker":"8564f9c4a1776c9e","nl":false,"rap":true,"rh":0,"inputs":0,"x":300,"y":220,"wires":[["0f48d4cb124f2b08"]]},{"id":"368059e712b45cb0","type":"comment","z":"a7f18432eda62bdc","name":"Subscribe to receive commands for switching Light Indicator","info":"","x":360,"y":160,"wires":[]},{"id":"b75a120d180c8383","type":"ui_switch","z":"a7f18432eda62bdc","name":"","label":"Switch Light ON / OFF","tooltip":"","group":"ddf9cb041e7aabdb","order":0,"width":0,"height":0,"passthru":true,"decouple":"false","topic":"topic","topicType":"msg","style":"","onvalue":"true","onvalueType":"bool","onicon":"","oncolor":"","offvalue":"false","offvalueType":"bool","officon":"","offcolor":"","animate":false,"className":"","x":420,"y":340,"wires":[["ce353de9205e1a60"]]},{"id":"ce353de9205e1a60","type":"mqtt out","z":"a7f18432eda62bdc","name":"Publish to Local HiveMQ MQTT Broker","topic":"remote_plant_1/light","qos":"","retain":"","respTopic":"","contentType":"","userProps":"","correl":"","expiry":"","broker":"8564f9c4a1776c9e","x":890,"y":340,"wires":[]}]
+[
+    {
+        "id": "f7577481e763d189",
+        "type": "tab",
+        "label": "Monitoring",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a7f18432eda62bdc",
+        "type": "tab",
+        "label": "Command / Control",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "efbaadbb1a5438c4",
+        "type": "modbus-client",
+        "name": "Schneider PLC Modbus",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "failureLogEnabled": true,
+        "tcpHost": "192.168.0.133",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true,
+        "showWarnings": true,
+        "showLogs": true
+    },
+    {
+        "id": "9332b7b4935332d5",
+        "type": "OpcUa-Endpoint",
+        "endpoint": "opc.tcp://192.168.0.229:14840/groov",
+        "secpol": "None",
+        "secmode": "None",
+        "none": true,
+        "login": false,
+        "usercert": false,
+        "usercertificate": "",
+        "userprivatekey": ""
+    },
+    {
+        "id": "8564f9c4a1776c9e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d0ba5f67c368acc3",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "balena",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "9fc71d1ed6f3ac60",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "326e6b499a6c1223",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "ddf9cb041e7aabdb",
+        "type": "ui_group",
+        "name": "Command and Control",
+        "tab": "9fc71d1ed6f3ac60",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "7c0f909346aa6a08",
+        "type": "modbus-read",
+        "z": "f7577481e763d189",
+        "name": "Schneider PLC Modbus",
+        "topic": "temperature",
+        "showStatusActivities": false,
+        "logIOActivities": false,
+        "showErrors": false,
+        "showWarnings": true,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "0",
+        "quantity": "1",
+        "rate": "3",
+        "rateUnit": "m",
+        "delayOnStart": false,
+        "startDelayTime": "",
+        "server": "efbaadbb1a5438c4",
+        "useIOFile": false,
+        "ioFile": "",
+        "useIOForPayload": false,
+        "emptyMsgOnFail": false,
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [],
+            [
+                "3259e4c4672aee59"
+            ]
+        ]
+    },
+    {
+        "id": "1eb201da77ba8afd",
+        "type": "OpcUa-Client",
+        "z": "f7577481e763d189",
+        "endpoint": "9332b7b4935332d5",
+        "action": "read",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "",
+        "x": 400,
+        "y": 300,
+        "wires": [
+            [
+                "9801325389f1c552"
+            ]
+        ]
+    },
+    {
+        "id": "e14817a0215ceca6",
+        "type": "inject",
+        "z": "f7577481e763d189",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "ns=2;s=Devices/[GroovRio]/OptoMMP/Modules/Channels/Temperature/Value",
+        "payload": "",
+        "payloadType": "str",
+        "x": 170,
+        "y": 300,
+        "wires": [
+            [
+                "1eb201da77ba8afd"
+            ]
+        ]
+    },
+    {
+        "id": "3259e4c4672aee59",
+        "type": "function",
+        "z": "f7577481e763d189",
+        "name": "Pre-process Modbus Data",
+        "func": "var newMsg = {};\nnewMsg.payload = { \"temperature\": (msg.payload.data[0]/100)*16, \"id\": \"compressor1_temp\" };\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 160,
+        "wires": [
+            [
+                "1c75ee6a8e8452d7"
+            ]
+        ]
+    },
+    {
+        "id": "6b243f2fee8f2cb5",
+        "type": "mqtt in",
+        "z": "f7577481e763d189",
+        "name": "Subscribe to Local HiveMQ MQTT Broker",
+        "topic": "remote_plant_1",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "8564f9c4a1776c9e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 280,
+        "y": 480,
+        "wires": [
+            [
+                "fba91f0a21895959",
+                "e0789ffd43ffbf96",
+                "ebcddeddcb6b7afa"
+            ]
+        ]
+    },
+    {
+        "id": "fba91f0a21895959",
+        "type": "debug",
+        "z": "f7577481e763d189",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "84fa6ed9cac5a858",
+        "type": "influxdb out",
+        "z": "f7577481e763d189",
+        "influxdb": "d0ba5f67c368acc3",
+        "name": "",
+        "measurement": "msg.payload",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 940,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "1c75ee6a8e8452d7",
+        "type": "function",
+        "z": "f7577481e763d189",
+        "name": "Convert to ISA 95 Data Model",
+        "func": "var newMsg = {};\nnewMsg.payload = \n\n{\n    \"compressor1\": {\n        \"parameters\": [\n            {\n                \"id\": \"compressor_motor_temperature\",\n                \"name\": \"Motor Temperature\",\n                \"description\": \"PT_100 Temp Sensor mounted on the motor housing.\",\n                \"value\": msg.payload.temperature,\n                \"timestamp\": Date.now()\n            },\n\n            {\n                \"id\": \"compressor_run_status\",\n                \"name\": \"Running Status\",\n                \"description\": \"Is compressor running\",\n                \"value\": true,\n                \"timestamp\": Date.now()\n            }\n        ],\n\n        \"metaData\": [\n            {\n                \"nameplate\": [\n                    {\n                        \"id\": \"hivemq_balena_hivemq_ming_stack \",\n                        \"name\": \"HiveMQ Balena MING Stack Demonstrator \",\n                        \"description\": \"HiveMQ\",\n                        \"value\": \"HiveMQ_Balena MING Stack Demontrator\",\n                        \"timestamp\": Date.now()\n                    }\n                ]\n            }]\n\n\n\n    }\n}\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 160,
+        "wires": [
+            [
+                "d0a1180832dd8dc8"
+            ]
+        ]
+    },
+    {
+        "id": "9801325389f1c552",
+        "type": "function",
+        "z": "f7577481e763d189",
+        "name": "Convert to ISA 95 Data Model",
+        "func": "var newMsg = {};\nnewMsg.payload = \n\n{\n    \"compressor2\": {\n        \"parameters\": [\n            {\n                \"id\": \"compressor_motor_temperature\",\n                \"name\": \"Motor Temperature\",\n                \"description\": \"PT_100 Temp Sensor mounted on the motor housing.\",\n                \"value\": msg.payload,\n                \"timestamp\": Date.now()\n            },\n\n            {\n                \"id\": \"compressor_run_status\",\n                \"name\": \"Running Status\",\n                \"description\": \"Is compressor running\",\n                \"value\": true,\n                \"timestamp\": Date.now()\n            }\n        ],\n\n        \"metaData\": [\n            {\n                \"nameplate\": [\n                    {\n                        \"id\": \"hivemq_balena_hivemq_ming_stack \",\n                        \"name\": \"HiveMQ Balena MING Stack Demonstrator \",\n                        \"description\": \"HiveMQ\",\n                        \"value\": \"HiveMQ_Balena MING Stack Demontrator\",\n                        \"timestamp\": Date.now()\n                    }\n                ]\n            }]\n\n\n\n    }\n}\n\nreturn newMsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 300,
+        "wires": [
+            [
+                "d0a1180832dd8dc8"
+            ]
+        ]
+    },
+    {
+        "id": "d0a1180832dd8dc8",
+        "type": "mqtt out",
+        "z": "f7577481e763d189",
+        "name": "Publish to Local HiveMQ MQTT Broker",
+        "topic": "remote_plant_1",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8564f9c4a1776c9e",
+        "x": 1170,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "20b8189c4bbade31",
+        "type": "comment",
+        "z": "f7577481e763d189",
+        "name": "Collect data from Modbus and OPC UA devices and publish it to MQTT broker",
+        "info": "",
+        "x": 360,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "99cdabfd049fe66b",
+        "type": "comment",
+        "z": "f7577481e763d189",
+        "name": "Subscribe to receive collected data and store on InfluxDB",
+        "info": "",
+        "x": 330,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "e0789ffd43ffbf96",
+        "type": "function",
+        "z": "f7577481e763d189",
+        "name": "Parameters parser",
+        "func": "var msgs = [];\n\nvar message = msg.payload;\nvar compressor = \"compressor1\";\n\nif (message.compressor2 != null) {\n    message = message.compressor2;\n    compressor = \"compressor2\";\n}\nelse {\n    message = message.compressor1;\n}\n\nfor (var i = 0; i < message.parameters.length; i++) {\n    if (message.parameters[i].id == \"compressor_motor_temperature\") {\n        msgs.push(\n            {\n                measurement: \"compressor\",\n                fields: {\n                    temperature: message.parameters[i].value,\n                    timestamp: message.parameters[i].timestamp\n                },\n                tags: {\n                    id: compressor\n\n                },\n                timestamp: new Date()\n            }\n        );\n    }\n    else if (message.parameters[i].id == \"compressor_run_status\") {\n        msgs.push(\n            {\n                measurement: \"compressor\",\n                fields: {\n                    status: message.parameters[i].value,\n                    timestamp: message.parameters[i].timestamp\n                },\n                tags: {\n                    id: compressor\n\n                },\n                timestamp: new Date()\n            }\n        );\n    }\n\n}\n\nmsg.payload = msgs;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 540,
+        "wires": [
+            [
+                "c66549aab8badc90",
+                "6446f52e02023442"
+            ]
+        ]
+    },
+    {
+        "id": "ebcddeddcb6b7afa",
+        "type": "function",
+        "z": "f7577481e763d189",
+        "name": "RAW data parser",
+        "func": "var jsonstr = JSON.stringify(msg.payload);\n\nvar message = msg.payload;\nvar compressor = \"compressor1\";\n\nif (message.compressor2 != null) {\n    message = message.compressor2;\n    compressor = \"compressor2\";\n}\nelse {\n    message = message.compressor1;\n}\n\n\n// batch up can specify measurment. Must use batch node\nmsg.payload = [\n    {\n        measurement: \"RAW_DATA\",\n        fields: {\n            jsonpayload: jsonstr,\n        },\n        tags: {\n            id: compressor,\n            name: message.metaData[0].nameplate[0].name\n        },\n        timestamp: new Date()\n    }\n];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 600,
+        "wires": [
+            [
+                "c66549aab8badc90",
+                "6446f52e02023442"
+            ]
+        ]
+    },
+    {
+        "id": "c66549aab8badc90",
+        "type": "influxdb batch",
+        "z": "f7577481e763d189",
+        "influxdb": "d0ba5f67c368acc3",
+        "precision": "",
+        "retentionPolicy": "",
+        "name": "InfluxDB batch",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 880,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "6446f52e02023442",
+        "type": "debug",
+        "z": "f7577481e763d189",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "8e5b14899e5e7691",
+        "type": "OpcUa-Client",
+        "z": "a7f18432eda62bdc",
+        "endpoint": "9332b7b4935332d5",
+        "action": "write",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "",
+        "x": 760,
+        "y": 220,
+        "wires": [
+            [
+                "98c9de3f54a23182"
+            ]
+        ]
+    },
+    {
+        "id": "0f48d4cb124f2b08",
+        "type": "OpcUa-Item",
+        "z": "a7f18432eda62bdc",
+        "item": "ns=2;s=Devices/[GroovRio]/OptoMMP/Modules/Channels/Light_Indicator/State",
+        "datatype": "Boolean",
+        "value": "True",
+        "name": "Write",
+        "x": 570,
+        "y": 220,
+        "wires": [
+            [
+                "8e5b14899e5e7691"
+            ]
+        ]
+    },
+    {
+        "id": "98c9de3f54a23182",
+        "type": "debug",
+        "z": "a7f18432eda62bdc",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "9cdc4b201dc39fe5",
+        "type": "mqtt in",
+        "z": "a7f18432eda62bdc",
+        "name": "Subscribe to Local HiveMQ MQTT Broker",
+        "topic": "remote_plant_1/light",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "8564f9c4a1776c9e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 300,
+        "y": 220,
+        "wires": [
+            [
+                "0f48d4cb124f2b08"
+            ]
+        ]
+    },
+    {
+        "id": "368059e712b45cb0",
+        "type": "comment",
+        "z": "a7f18432eda62bdc",
+        "name": "Subscribe to receive commands for switching Light Indicator",
+        "info": "",
+        "x": 360,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "b75a120d180c8383",
+        "type": "ui_switch",
+        "z": "a7f18432eda62bdc",
+        "name": "",
+        "label": "Switch Light ON / OFF",
+        "tooltip": "",
+        "group": "ddf9cb041e7aabdb",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 420,
+        "y": 340,
+        "wires": [
+            [
+                "ce353de9205e1a60"
+            ]
+        ]
+    },
+    {
+        "id": "ce353de9205e1a60",
+        "type": "mqtt out",
+        "z": "a7f18432eda62bdc",
+        "name": "Publish to Local HiveMQ MQTT Broker",
+        "topic": "remote_plant_1/light",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "8564f9c4a1776c9e",
+        "x": 890,
+        "y": 340,
+        "wires": []
+    }
+]
