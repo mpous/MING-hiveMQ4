@@ -19,9 +19,9 @@ These variables you can set them in the balenaCloud `Device Variables` tab for t
 
 Variable Name | Value | Description | Default
 ------------ | ------------- | ------------- | -------------
-**`USERNAME`** | `STRING` |  | `balena`
-**`PASSWORD`** | `STRING` |  | `balena`
-**`ENCRYPTION_KEY`** | `STRING` |  | `balena`
+**`USERNAME`** | `STRING` | Define a new username | `balena`
+**`PASSWORD`** | `STRING` | Define a new password | `balena`
+**`ENCRIPTION_KEY`** | `STRING` | Define a new key to encrypt nodeRED system | `balena`
 
 
 ## Configure the HiveMQ MQTT broker
