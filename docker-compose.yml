@@ -49,19 +49,24 @@ services:
         io.balena.features.sysfs: '1'
         io.balena.features.supervisor-api: '1'
         io.balena.features.balena-api: '1'
+        io.balena.features.balena-socket: '1'
+        io.balena.features.kernel-modules: '1'
+        io.balena.features.firmware: '1'
     ports:
         - 80:80
     environment:
-        PORT: 80
-        USERNAME: "balena"
-        PASSWORD: "balena"
-        ENCRIPTION_KEY: "balena"        
+        - PORT=80
+        - USERNAME="balena"
+        - PASSWORD="balena"
+        - ENCRIPTION_KEY="balena"
+        - UDEV=on
     cap_add:
         - SYS_RAWIO
     devices:
         - "/dev/mem:/dev/mem"
         - "/dev/gpiomem:/dev/gpiomem"
         - "/dev/i2c-1:/dev/i2c-1"
+        - "/dev/ttyUSB0:/dev/ttyUSB0"
 
   # ------------------------------------------------------------------------------------
   # Grafana
