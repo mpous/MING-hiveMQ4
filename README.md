@@ -13,6 +13,16 @@ Running this project is as simple as deploying it to a balenaCloud application. 
 
 Follow instructions, click Add a Device and flash an SD card with that OS image dowloaded from balenaCloud. Enjoy the magic 🌟Over-The-Air🌟!
 
+## Configure nodeRED
+
+These variables you can set them in the balenaCloud `Device Variables` tab for the device (or globally for the whole application). If you would like to change your login credentials feel free to update these variables.
+
+Variable Name | Value | Description | Default
+------------ | ------------- | ------------- | -------------
+**`USERNAME`** | `STRING` |  | `balena`
+**`PASSWORD`** | `STRING` |  | `balena`
+**`ENCRYPTION_KEY`** | `STRING` |  | `balena`
+
 
 ## Configure the HiveMQ MQTT broker
 
