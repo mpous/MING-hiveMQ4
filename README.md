@@ -31,9 +31,12 @@ These variables you can set them in the balenaCloud `Device Variables` tab for t
 Variable Name | Value | Description | Default
 ------------ | ------------- | ------------- | -------------
 **`HIVEMQ_BRIDGE_EXTENSION`** | `boolean` | Enable bridge extension and delete the `DISABLED` file on the bridge-extension folder | `false`
-**`HIVEMQ_CONNECTION_CONFIGURATION`** | `STRING (XML)` | Connection tag XML definition. | ```<connection><static><host>your-host-address</host><port>your-port</port></static></connection>```
-**`HIVEMQ_AUTHENTICATION_CONFIGURATION`** | `STRING (XML)` | Authentication tag XML definition. | ```<authentication><mqtt-simple-authentication><username>your-username</username><password>your-password</password></mqtt-simple-authentication></authentication>```
-**`HIVEMQ_TOPICS_CONFIGURATION`** | `STRING (XML)` | Topics tag XML definition on the bridge-extension.xml file. | ```<topics><topic><filter>plant1/compressors</filter></topic></topics>```
+**`HIVEMQ_HOST_URL`** | `STRING` | URL of the Host connected via the Bridge Extension. | ```HIVEMQ_HOST_URL```
+**`HIVEMQ_HOST_PORT`** | `STRING` | Port of the host connected via the Bridge Extension. | ```HIVEMQ_HOST_PORT```
+**`HIVEMQ_HOST_USERNAME`** | `STRING` | Username of the MQTT simple authentication to connect the Bridge Extension. | ```HIVEMQ_HOST_USERNAME```
+**`HIVEMQ_HOST_PASSWORD`** | `STRING` | Password of the MQTT simple authentication to connect the Bridge Extension. | ```HIVEMQ_HOST_PASSWORD```
+**`HIVEMQ_TLS_ENABLED`** | `boolean` | Adds the TLS tags to use the MQTT over TLS through the Bridge Extension. | ```false```
+**`HIVEMQ_TOPICS_CONFIGURATION`** | `STRING (XML)` | Topic tag XML definition on the bridge-extension.xml file. | ```<topics><topic> What it goes here </topic></topics>```
 **`HIVEMQ_LICENSE`** | `STRING` | Your license file cntent in one unique line separated by "|". Automatically the system will generate a `license.lic` file with the base64 content from this variable. | 
 **`HIVEMQ_REST_API_ENABLED`** | `boolean` | Enables to change the config.xml file with the `rest-api` tag. | `false`
 **`HIVEMQ_REST_API_CONFIGURATION`** | `STRING (XML)` | REST API tag XML definition on the config.xml file. | ```<rest-api><enabled>true</enabled><listeners><http><port>8888</port><bind-address>0.0.0.0</bind-address></http></listeners></rest-api>```
