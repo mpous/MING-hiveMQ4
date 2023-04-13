@@ -37,7 +37,7 @@ Variable Name | Value | Description | Default
 **`HIVEMQ_HOST_PASSWORD`** | `STRING` | Password of the MQTT simple authentication to connect the Bridge Extension. | ```HIVEMQ_HOST_PASSWORD```
 **`HIVEMQ_TLS_ENABLED`** | `boolean` | Adds the TLS tags to use the MQTT over TLS through the Bridge Extension. | ```false```
 **`HIVEMQ_TOPICS_CONFIGURATION`** | `STRING (XML)` | Topic tag XML definition on the bridge-extension.xml file. | ```<topics><topic> What it goes here </topic></topics>```
-**`HIVEMQ_LICENSE`** | `STRING` | Your license file cntent in one unique line separated by "|". Automatically the system will generate a `license.lic` file with the base64 content from this variable. | 
+**`HIVEMQ_LICENSE`** | `STRING` | Your license file cntent in one unique line separated by `|` Automatically the system will generate a `license.lic` file with the base64 content from this variable. | 
 **`HIVEMQ_REST_API_ENABLED`** | `boolean` | Enables to change the config.xml file with the `rest-api` tag. | `false`
 **`HIVEMQ_REST_API_CONFIGURATION`** | `STRING (XML)` | REST API tag XML definition on the config.xml file. | ```<rest-api><enabled>true</enabled><listeners><http><port>8888</port><bind-address>0.0.0.0</bind-address></http></listeners></rest-api>```
 
