@@ -17,8 +17,12 @@ assets:
 data:
   applicationEnvironmentVariables:
     - HIVEMQ_BRIDGE_EXTENSION: false
-    - HIVEMQ_AUTHENTICATION_ENABLED: false
-    - HIVEMQ_AUTHENTICATION_CONFIGURATION: <authentication><mqtt-simple-authentication><username>your-username</username><password>your-password</password></mqtt-simple-authentication></authentication>
+    - HIVEMQ_HOST_URL: "HIVEMQ_HOST_URL"
+    - HIVEMQ_HOST_PORT: "HIVEMQ_HOST_PORT"
+    - HIVEMQ_HOST_USERNAME: "HIVEMQ_HOST_USERNAME"
+    - HIVEMQ_HOST_PASSWORD: "HIVEMQ_HOST_PASSWORD"
+    - HIVEMQ_TLS_ENABLED: false
+    - HIVEMQ_TOPICS_CONFIGURATION: "<filter>#</filter>"
     - HIVEMQ_CONNECTION_ENABLED: false
     - HIVEMQ_CONNECTION_CONFIGURATION: <connection><static><host>your-cloud-connection-host</host><port>your-port</port></static></connection> #<<tls><enabled>true</enabled><cipher-suites><cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</cipher-suite><cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_128_CBC_SHA</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_256_CBC_SHA</cipher-suite></cipher-suites><protocols><protocol>TLSv1.2</protocol></protocols></tls>
   defaultDeviceType: genericx86-64-ext
