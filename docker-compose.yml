@@ -59,7 +59,6 @@ services:
         - USERNAME="balena"
         - PASSWORD="balena"
         - ENCRIPTION_KEY="balena"
-        - UDEV=on
     cap_add:
         - SYS_RAWIO
     devices:

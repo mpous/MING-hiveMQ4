@@ -8,13 +8,34 @@
             <name>balena-hivemqcloud-bridge</name>
             <remote-broker>
             
-                <!-- authentication -->
+                <!-- AUTHENTICATION -->
+                <authentication>
+                    <mqtt-simple-authentication>
+                        <username>HIVEMQ_HOST_USERNAME</username>
+                        <password>HIVEMQ_HOST_PASSWORD</password>
+                    </mqtt-simple-authentication>
+                </authentication>
 
-                <!-- configurable host and port -->
+
+                <!-- CONNECTION -->
+                <connection>
+                    <static>
+                        <host>HIVEMQ_HOST_URL</host>
+                        <port>HIVEMQ_HOST_PORT</port>
+                    </static>
+                </connection>
+                
+                <!-- TLS -->
 
             </remote-broker>
 
             <!-- configurable list of filters -->
+
+            <topics>
+                <topic>
+                    <!-- TOPICS -->
+                </topic>
+            </topics>
             
         </bridge>
     </bridges>

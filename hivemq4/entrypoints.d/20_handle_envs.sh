@@ -55,54 +55,76 @@ fi
 
 # balena version
 
+# BRIDGE EXTENSION
 # Enable bridge extensions if you are going to use the HiveMQ Bridge Extension
 if [[ "${HIVEMQ_BRIDGE_EXTENSION}" == "true" ]]; then
     echo "Enabling the bridge extension"
     rm /opt/hivemq/extensions/hivemq-bridge-extension/DISABLED || true
 fi
 
-# Cloud connection configuration to have a connection between the Edge Broker and the Cloud Broker (example below)
-#                <connection>  
-#                    <static>
-#                        <host>157.230.76.185</host>
-#                        <port>1883</port> 
-#                    </static>
-#                </connection>
-#
-if [[ "${HIVEMQ_CONNECTION_ENABLED}" == "true" ]]; then
-  echo "Enabling CLOUD connection in bridge-configuration.xml from balenaCloud Device Variables."
-  HIVEMQ_CONNECTION_CONFIGURATION="${HIVEMQ_CONNECTION_CONFIGURATION//$'\n'/}"
-  sed -i "s|<\!-- configurable host and port -->|${HIVEMQ_CONNECTION_CONFIGURATION}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
+
+# CONNECTION
+# Cloud connection configuration to have a bridge extension connection between the Edge Broker and the Cloud Broker
+if [[ -n "${HIVEMQ_HOST_URL}" ]]; then
+  echo "Enabling connection (host) in bridge-configuration.xml from balenaCloud Device Variables."
+  sed -i "s|HIVEMQ_HOST_URL|${HIVEMQ_HOST_URL}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
+fi
+
+if [[ -n "${HIVEMQ_HOST_PORT}" ]]; then
+  echo "Enabling connection (port) in bridge-configuration.xml from balenaCloud Device Variables."
+  sed -i "s|HIVEMQ_HOST_PORT|${HIVEMQ_HOST_PORT}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
 fi
 
 
-# Authentication for edge --> cloud connection (example below)
-#                 <authentication>
-#                    <mqtt-simple-authentication>
-#                        <username>a-username</username>
-#                        <password>a-user-password</password>
-#                    </mqtt-simple-authentication>
-#                </authentication>
-#
-if [[ "${HIVEMQ_AUTHENTICATION_ENABLED}" == "true" ]]; then
-  echo "Enabling AUTHENTICATION in bridge-configuration.xml from balenaCloud Device Variables."
-  HIVEMQ_AUTHENTICATION_CONFIGURATION="${HIVEMQ_AUTHENTICATION_CONFIGURATION//$'\n'/}"
-  sed -i "s|<\!-- authentication -->|${HIVEMQ_AUTHENTICATION_CONFIGURATION}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
+# AUTHENTICATION
+# MQTT simple authentication for the bridge extension. edge --> cloud connection
+if [[ -n "${HIVEMQ_HOST_USERNAME}" ]]; then
+  echo "Enabling AUTHENTICATION (username) in bridge-configuration.xml from balenaCloud Device Variables."
+  sed -i "s|HIVEMQ_HOST_USERNAME|${HIVEMQ_HOST_USERNAME}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
 fi
 
+if [[ -n "${HIVEMQ_HOST_PASSWORD}" ]]; then
+  echo "Enabling AUTHENTICATION (password) in bridge-configuration.xml from balenaCloud Device Variables."
+  sed -i "s|HIVEMQ_HOST_PASSWORD|${HIVEMQ_HOST_PASSWORD}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
+fi
+
+
+
+# TLS enabled
+#
+# <tls>
+#   <enabled>true</enabled>
+#   <cipher-suites>
+#     <cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</cipher-suite>
+#     <cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</cipher-suite>
+#     <cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</cipher-suite>
+#     <cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</cipher-suite>
+#     <cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</cipher-suite>
+#     <cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</cipher-suite>
+#     <cipher-suite>TLS_RSA_WITH_AES_128_GCM_SHA256</cipher-suite>
+#     <cipher-suite>TLS_RSA_WITH_AES_128_CBC_SHA</cipher-suite>
+#     <cipher-suite>TLS_RSA_WITH_AES_256_CBC_SHA</cipher-suite>
+#   </cipher-suites>
+#   <protocols>
+#     <protocol>TLSv1.2</protocol>
+#   </protocols>
+# </tls>
+#
+if [[ "${HIVEMQ_TLS_ENABLED}" == "true" ]]; then
+  echo "Enabling TOPICS in bridge-configuration.xml from balenaCloud Device Variables."
+  HIVEMQ_TLS="<tls><enabled>true</enabled><cipher-suites><cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</cipher-suite><cipher-suite>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</cipher-suite><cipher-suite>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_128_GCM_SHA256</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_128_CBC_SHA</cipher-suite><cipher-suite>TLS_RSA_WITH_AES_256_CBC_SHA</cipher-suite></cipher-suites><protocols><protocol>TLSv1.2</protocol></protocols></tls>"
+  sed -i "s|<!-- TLS -->|${HIVEMQ_TLS}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
+fi
 
 # Topics and filters configuration (example below)
-#           <topics> 
-#                <topic>
-#                    <filter>iiot/lab/cloud</filter>
-#                    <filter>iiot/lab/webapp/status</filter>
-#                </topic>
-#            </topics>
+#
+#     <filter>iiot/lab/cloud</filter>
+#     <filter>iiot/lab/webapp/status</filter>
 #
 if [[ -n "${HIVEMQ_TOPICS_CONFIGURATION}" ]]; then
   echo "Enabling TOPICS in bridge-configuration.xml from balenaCloud Device Variables."
   HIVEMQ_TOPICS_CONFIGURATION="${HIVEMQ_TOPICS_CONFIGURATION//$'\n'/}"
-  sed -i "s|<\!-- configurable list of filters -->|${HIVEMQ_TOPICS_CONFIGURATION}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
+  sed -i "s|<!-- TOPICS -->|${HIVEMQ_TOPICS_CONFIGURATION}|" /opt/hivemq/extensions/hivemq-bridge-extension/bridge-configuration.xml
 fi
 
 echo >&3 "setting bind address to ${HIVEMQ_BIND_ADDRESS}"
