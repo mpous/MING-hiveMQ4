@@ -4,6 +4,12 @@ This is a reference architecture to run on your IIoT Edge Gateway with HiveMQ MQ
 
 The example application is reading from Modbus and OPC UA sensors using the MING stack (MQTT, InfluxDB, NodeRED and Grafana) to use the advantages of the Edge Computing to digitalize a factory. In future examples we are going to use IIoT Edge Gateways with HiveMQ and balena to add a UNS (Unified Name Space) for data modeling and MQTT Sparkplug B to format the data being sent over MQTT.
 
+## Disclaimer
+
+This project is for educational purposes only. Do not deploy it into your premises without understanding what you are doing. USE THE SOFTWARE AT YOUR OWN RISK. THE AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR SECURITY.
+
+We strongly recommend you to have some coding and networking knowledge. Do not hesitate to read the source code and understand the mechanism of this project or contact the authors.
+
 
 ## Deploy the code
 
