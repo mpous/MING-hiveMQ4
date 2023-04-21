@@ -29,4 +29,5 @@ data:
   supportedDeviceTypes:
     - genericx86-64-ext
     - intel-nuc
+    - generic-amd64
 
