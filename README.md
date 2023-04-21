@@ -1,5 +1,7 @@
 # Industrial IoT Gateway using MING with HiveMQ and balena
 
+![](https://user-images.githubusercontent.com/173156/233677346-69a3d123-58d6-486b-8c7c-59a80a7d2ed6.png)
+
 This is a reference architecture to run on your IIoT Edge Gateway with HiveMQ MQTT broker on balena. 
 
 The example application is reading from Modbus and OPC UA sensors using the MING stack (MQTT, InfluxDB, NodeRED and Grafana) to use the advantages of the Edge Computing to digitalize a factory. In future examples we are going to use IIoT Edge Gateways with HiveMQ and balena to add a UNS (Unified Name Space) for data modeling and MQTT Sparkplug B to format the data being sent over MQTT.
