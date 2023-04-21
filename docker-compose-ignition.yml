@@ -1,0 +1,115 @@
+
+version: '2.1'
+
+services:
+  
+  # ------------------------------------------------------------------------------------
+  # MQTT broker - HiveMQ 4 
+  # ------------------------------------------------------------------------------------
+  hivemq4:
+    build: ./hivemq4
+    ports:
+      - 1883:1883 # MQTT/TCP protocol port
+      - 8080:8080 # Control Center port
+      - 8000:8000 # Websockets port
+    volumes:
+      - hivemq_data:/opt/hivemq/data                     # Make broker data persistent throughout stop/start cycles
+      - hivemq_log:/opt/hivemq/log                       # Persist log data
+      - hivemq_license:/opt/hivemq/license               # Persist HiveMQ license
+    environment:
+      JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
+      HIVEMQ_BRIDGE_EXTENSION: false
+      HIVEMQ_HOST_URL: "HIVEMQ_HOST_URL"
+      HIVEMQ_HOST_PORT: "HIVEMQ_HOST_PORT"
+      HIVEMQ_HOST_USERNAME: "HIVEMQ_HOST_USERNAME"
+      HIVEMQ_HOST_PASSWORD: "HIVEMQ_HOST_PASSWORD"
+      HIVEMQ_TLS_ENABLED: false
+      HIVEMQ_TOPICS_CONFIGURATION: "<filter>#</filter>"
+      HIVEMQ_CONNECTION_ENABLED: false
+    
+  
+  
+  # ------------------------------------------------------------------------------------
+  # Influxdb
+  # ------------------------------------------------------------------------------------
+  influxdb:
+    image: influxdb:1.7.11
+    #image: influxdb:latest
+    container_name: influxdb
+    restart: unless-stopped
+    ports:
+        - '8086'
+    volumes:
+        - influxdb-data:/var/lib/influxdb
+        - influxdb-etc:/etc/influxdb
+
+
+  # ------------------------------------------------------------------------------------
+  # Node-RED
+  # ------------------------------------------------------------------------------------
+  # node-red:
+  #   build: ./node-red 
+  #   privileged: true
+  #   network_mode: host
+  #   restart: unless-stopped
+  #   volumes:
+  #       - 'node-red-data:/data'
+  #   labels:
+  #       io.balena.features.dbus: '1'
+  #       io.balena.features.sysfs: '1'
+  #       io.balena.features.supervisor-api: '1'
+  #       io.balena.features.balena-api: '1'
+  #       io.balena.features.balena-socket: '1'
+  #       io.balena.features.kernel-modules: '1'
+  #       io.balena.features.firmware: '1'
+  #   ports:
+  #       - 80:80
+  #   environment:
+  #       - PORT=80
+  #       - USERNAME="balena"
+  #       - PASSWORD="balena"
+  #       - ENCRIPTION_KEY="balena"
+  #   cap_add:
+  #       - SYS_RAWIO
+  #   devices:
+  #       - "/dev/mem:/dev/mem"
+  #       - "/dev/gpiomem:/dev/gpiomem"
+  #       - "/dev/i2c-1:/dev/i2c-1"
+  #       - "/dev/ttyUSB0:/dev/ttyUSB0"
+
+  # ------------------------------------------------------------------------------------
+  # Grafana
+  # ------------------------------------------------------------------------------------
+  grafana:
+    image: grafana/grafana
+    restart: unless-stopped
+    network_mode: host
+    ports:
+      - '3000:3000'
+    volumes:
+        - "grafana-data:/data"
+  
+  # ------------------------------------------------------------------------------------
+  # Ignition Edge Server software
+  # ------------------------------------------------------------------------------------
+  ignition:
+    image: inductiveautomation/ignition:latest
+    ports:
+      - "9088:8088"
+      - "8043:8043"
+      - "8060:8060"
+    volumes:
+      - "ignition-data:/var/lib/ignition/data"
+    cap_add:
+      - SYS_RAWIO
+    privileged: true
+  
+volumes:
+  hivemq_data:
+  hivemq_log:
+  hivemq_license:
+  ignition-data:
+  grafana-data:
+  influxdb-data:
+  influxdb-etc:
+
