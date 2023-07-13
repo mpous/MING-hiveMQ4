@@ -4,7 +4,6 @@ description: >-
   IIoT edge gateway reference architecture using MING with HiveMQ on balena
 joinable: false
 # By default post-provisioning is overwritten by the deploy-to-balena GitHub action to match README.md
-post-provisioning: Click 'View code' to see the README.
 assets:
   repository:
     type: blob.asset
@@ -33,4 +32,10 @@ data:
     - genericx86-64-ext
     - intel-nuc
     - generic-amd64
+
+post-provisioning: >-
+  This is a reference architecture to run on your IIoT Edge Gateway with the MING stack using the HiveMQ MQTT broker on balena.
+  
+  The example application is reading from Modbus and OPC UA sensors using the MING stack (MQTT, InfluxDB, NodeRED and Grafana) to enhance the advantages of the Edge Computing to digitalize a factory. Take the advantage of using Unified Name Space for data modeling and MQTT Sparkplug B to format the data being sent over MQTT with HiveMQ on balena.
+
 
