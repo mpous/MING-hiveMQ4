@@ -16,6 +16,9 @@ assets:
       url: 'https://raw.githubusercontent.com/mpous/hivemq4-ming/master/logo.png'
 data:
   applicationEnvironmentVariables:
+    - USERNAME: "balena"
+    - PASSWORD: "balena"
+    - ENCRIPTION_KEY: "balena"
     - HIVEMQ_BRIDGE_EXTENSION: false
     - HIVEMQ_HOST_URL: "HIVEMQ_HOST_URL"
     - HIVEMQ_HOST_PORT: "HIVEMQ_HOST_PORT"
