@@ -3,28 +3,30 @@ version: '2.1'
 services:
   
   # ------------------------------------------------------------------------------------
-  # MQTT broker - HiveMQ 4 
+  # BalenaLabs WiFi-Connect
   # ------------------------------------------------------------------------------------
-  hivemq4:
-    build: ./hivemq4
-    ports:
-      - 1883:1883 # MQTT/TCP protocol port
-      - 8080:8080 # Control Center port
-      - 8000:8000 # Websockets port
-    volumes:
-      - hivemq_data:/opt/hivemq/data                     # Make broker data persistent throughout stop/start cycles
-      - hivemq_log:/opt/hivemq/log                       # Persist log data
-      - hivemq_license:/opt/hivemq/license               # Persist HiveMQ license
+  wifi-connect:
+    image: bh.cr/balenalabs/wifi-connect-rpi
+    container_name: wifi-connect
+    network_mode: host
+    labels:
+        io.balena.features.dbus: '1'
+        io.balena.features.firmware: '1'
+    cap_add:
+        - NET_ADMIN
     environment:
-      JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:InitialRAMPercentage=30 -XX:MaxRAMPercentage=80 -XX:MinRAMPercentage=30"
-      HIVEMQ_BRIDGE_EXTENSION: false
-      HIVEMQ_HOST_URL: "HIVEMQ_HOST_URL"
-      HIVEMQ_HOST_PORT: "HIVEMQ_HOST_PORT"
-      HIVEMQ_HOST_USERNAME: "HIVEMQ_HOST_USERNAME"
-      HIVEMQ_HOST_PASSWORD: "HIVEMQ_HOST_PASSWORD"
-      HIVEMQ_TLS_ENABLED: false
-      HIVEMQ_TOPICS_CONFIGURATION: "<filter>#</filter>"
-      HIVEMQ_CONNECTION_ENABLED: false
+        DBUS_SYSTEM_BUS_ADDRESS: "unix:path=/host/run/dbus/system_bus_socket"
+  
+  
+  # ------------------------------------------------------------------------------------
+  # MQTT
+  # ------------------------------------------------------------------------------------
+  mqtt:
+    image: eclipse-mosquitto:1.6.15
+    container_name: mqtt
+    ports:
+      - "1883:1883"
+    restart: always
     
   
   

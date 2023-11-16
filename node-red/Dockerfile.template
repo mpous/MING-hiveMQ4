@@ -4,8 +4,27 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-node:latest as build
 
 WORKDIR /usr/src/app
+
+RUN apt-get -q update && apt-get install -yq --no-install-recommends \
+	build-essential \
+  git \
+  npm \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+RUN git clone -b v2.0.0 https://github.com/Industrial-Shields/rpiplc-lib.git
+WORKDIR /usr/src/app/rpiplc-lib
+
+RUN make 
+#RUN make install
+
+RUN ldconfig
+
+WORKDIR /usr/src/app
+
 COPY ./app/package.json package.json
 COPY ./app/package-lock.json package-lock.json
+
 
 RUN JOBS=MAX npm install -g --production --unsafe-perm \
       node-red \
@@ -17,9 +36,10 @@ RUN JOBS=MAX npm install -g --production --unsafe-perm \
       node-red-contrib-buffer-parser \
       node-red-contrib-opcua \
       node-red-contrib-mqtt-sparkplug-plus \
-      node-red-dashboard \
+      @flowforge/node-red-dashboard \
       node-red-contrib-s7 \
       node-red-contrib-balena \
+
     && JOBS=MAX npm install --unsafe-perm --production && npm cache clean --force
 
 ###
@@ -40,17 +60,25 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
 # Defines our working directory in container
 WORKDIR /usr/src/app
 
+
 # Copy over the files created in the previous step, including lib/, bin/
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=build /usr/src/app/node_modules /usr/src/app/node_modules
+# rpiplc-lib
+RUN mkdir /usr/local/include/rpiplc
+COPY --from=build /usr/src/app/rpiplc-lib/librpiplc.so /usr/local/lib/
+COPY --from=build /usr/src/app/rpiplc-lib/src/*.h /usr/local/include/rpiplc/
+
 COPY ./ssh_config /etc/ssh/ssh_config
+
+
 
 # This will copy all files in our root to the working  directory in the container
 COPY ./app ./
 
 # Enable udev for detection of dynamically plugged devices
-#ENV UDEV=on
+ENV UDEV=on
 
 # server.js will run when container starts up on the device
 CMD ["bash", "/usr/src/app/start.sh"]
