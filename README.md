@@ -17,6 +17,10 @@ Running this project is as simple as deploying it to a balenaCloud application. 
 
 Follow instructions, click Add a Device and flash an SD card with that OS image dowloaded from balenaCloud. Enjoy the magic 🌟Over-The-Air🌟!
 
+
+![Industrial Shields PLC Raspberry Pi 4 running on balena with the MING stack](https://github.com/mpous/industrialshields-ming/assets/173156/ac44803e-03de-4fdf-b870-5fff15423210)
+
+
 ## Configure nodeRED
 
 These variables you can set them in the balenaCloud `Device Variables` tab for the device (or globally for the whole application). If you would like to change your login credentials feel free to update these variables.
@@ -30,7 +34,17 @@ Variable Name | Value | Description | Default
 
 ## Install the RPIPLC node
 
-TBD
+To run the Industrial Shields nodes on the edge Node-RED get into the Node-RED UI using the port 80 of your local IP address, or alternatively using the balena `Public Device URL`. Then go to the main menu, and click on `Manage palette`. Search for `rpiplc` and you will find the Industrial Shields nodes called `node-red-contrib-rpiplc-node`. And click Install.
+
+![Adding Industrial Shields nodes on Node-RED](https://github.com/mpous/industrialshields-ming/assets/173156/b54dd30b-141a-45f3-ad35-00c3e3bab776)
+
+
+Once successfully installed you will be able to see the Industrial Shields nodes on the left menu and ready to be used on your flow.
+
+![Using Industrial Shields nodes on your Node-RED flow](https://github.com/mpous/industrialshields-ming/assets/173156/f3e5c5fd-251d-4bb9-a3d9-a2ba840679b5)
+
+
+You can find more information on the Industrial Shields page.
 
 
 ## Troubleshooting
