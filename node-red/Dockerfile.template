@@ -18,8 +18,6 @@ WORKDIR /usr/src/app/rpiplc-lib
 RUN make 
 #RUN make install
 
-RUN ldconfig
-
 WORKDIR /usr/src/app
 
 COPY ./app/package.json package.json
@@ -65,10 +63,12 @@ WORKDIR /usr/src/app
 COPY --from=build /usr/local/bin /usr/local/bin
 COPY --from=build /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --from=build /usr/src/app/node_modules /usr/src/app/node_modules
+
 # rpiplc-lib
 RUN mkdir /usr/local/include/rpiplc
 COPY --from=build /usr/src/app/rpiplc-lib/librpiplc.so /usr/local/lib/
 COPY --from=build /usr/src/app/rpiplc-lib/src/*.h /usr/local/include/rpiplc/
+RUN ldconfig
 
 COPY ./ssh_config /etc/ssh/ssh_config
 
