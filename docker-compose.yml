@@ -77,6 +77,10 @@ services:
         - "/dev/gpiomem:/dev/gpiomem"
         - "/dev/i2c-1:/dev/i2c-1"
         - "/dev/ttyUSB0:/dev/ttyUSB0"
+        - "/dev/ttySC0:/dev/ttySC0"
+        - "/dev/ttySC1:/dev/ttySC1"
+        - "/dev/ttySC2:/dev/ttySC2"
+        - "/dev/ttySC3:/dev/ttySC3"
 
   # ------------------------------------------------------------------------------------
   # Grafana

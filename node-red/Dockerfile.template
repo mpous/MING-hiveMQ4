@@ -11,12 +11,16 @@ RUN apt-get -q update && apt-get install -yq --no-install-recommends \
   npm \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
+# rpiplc-lib
 RUN git clone -b v2.0.0 https://github.com/Industrial-Shields/rpiplc-lib.git
 WORKDIR /usr/src/app/rpiplc-lib
 
 RUN make 
-#RUN make install
+
+# rpiplc hw-config
+RUN curl https://apps.industrialshields.com/main/rpi/rpiplc_v4/hw-config.service -o hw-config.service
+RUN curl https://apps.industrialshields.com/main/rpi/rpiplc_v4/hw-config -o hw-config
+
 
 WORKDIR /usr/src/app
 
@@ -45,6 +49,8 @@ RUN JOBS=MAX npm install -g --production --unsafe-perm \
 ###
 FROM balenalib/%%BALENA_MACHINE_NAME%%-debian-python:latest
 
+ENV INITSYSTEM on
+
 RUN apt-get update && apt-get install -yq --no-install-recommends \
   build-essential \
   g++ \
@@ -52,12 +58,15 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
   python-dev \
   libatomic1 \
   git \
+  systemd-sysv \
   openssh-client \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Install both DBus and systemd support to run systemctl hw-config
+RUN install_packages dbus systemd
+
 # Defines our working directory in container
 WORKDIR /usr/src/app
-
 
 # Copy over the files created in the previous step, including lib/, bin/
 COPY --from=build /usr/local/bin /usr/local/bin
@@ -69,6 +78,14 @@ RUN mkdir /usr/local/include/rpiplc
 COPY --from=build /usr/src/app/rpiplc-lib/librpiplc.so /usr/local/lib/
 COPY --from=build /usr/src/app/rpiplc-lib/src/*.h /usr/local/include/rpiplc/
 RUN ldconfig
+
+
+# rpiplc hw-config
+COPY --from=build /usr/src/app/rpiplc-lib/hw-config.service /lib/systemd/system/hw-config.service
+COPY --from=build /usr/src/app/rpiplc-lib/hw-config /usr/local/bin/hw-config
+RUN chmod ugo+x /usr/local/bin/hw-config
+#RUN systemctl start hw-config
+RUN systemctl enable hw-config
 
 COPY ./ssh_config /etc/ssh/ssh_config
 
